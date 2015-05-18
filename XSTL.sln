@@ -1,20 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XSTL", "XSTL\XSTL.vcxproj", "{CCD899BB-C591-48A7-B504-EF41D998995F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XSTL", "XSTL\XSTL.vcxproj", "{53A20518-2562-418B-ACB4-62B6D3CEB904}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Win32 = Debug|Win32
-		Release|Win32 = Release|Win32
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CCD899BB-C591-48A7-B504-EF41D998995F}.Debug|Win32.ActiveCfg = Debug|Win32
-		{CCD899BB-C591-48A7-B504-EF41D998995F}.Debug|Win32.Build.0 = Debug|Win32
-		{CCD899BB-C591-48A7-B504-EF41D998995F}.Release|Win32.ActiveCfg = Release|Win32
-		{CCD899BB-C591-48A7-B504-EF41D998995F}.Release|Win32.Build.0 = Release|Win32
+		{53A20518-2562-418B-ACB4-62B6D3CEB904}.Debug|x86.ActiveCfg = Debug|Win32
+		{53A20518-2562-418B-ACB4-62B6D3CEB904}.Debug|x86.Build.0 = Debug|Win32
+		{53A20518-2562-418B-ACB4-62B6D3CEB904}.Release|x86.ActiveCfg = Release|Win32
+		{53A20518-2562-418B-ACB4-62B6D3CEB904}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
