@@ -8,11 +8,24 @@ namespace XX
 	inline void construct(T1 *p, T2 &value){
 		new (p)T2(value);
 	}
+	template<class T1, class T2>
+	inline void construct(T1 *p, T2 &&value){
+		new (p)T2(value);
+	}
 	template<class T>
 	inline void destroy(T *p){
 		p->~T();
 	}
 
+	template<typename ForwardIterator>
+	inline void destroy(ForwardIterator first, ForwardIterator last)
+	{
+		while (first!=last)
+		{
+			destroy(first);
+			++first;
+		}
+	}
 	//针对char *和wchar_t *的特化版本
 	inline void destroy(char * pc1, char* pc2){}
 	inline void destroy(wchar_t *pwc1, wchar_t *pwc2){}
