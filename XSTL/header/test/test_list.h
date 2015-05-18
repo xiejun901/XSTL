@@ -15,7 +15,7 @@ private:
 	using list_type = typename XX::list<T>;
 	using vector_type = typename XX::vector<T>;
 	using iterator = typename XX::list<T>::iterator;
-//	using const_iterator = typename XX::list<T>::const_iterator;
+	using const_iterator = typename XX::list<T>::const_iterator;
 	std::ostream &os;
 public:
 	list_type creat_list_from_vector(const vector_type &vec) {
@@ -33,8 +33,8 @@ public:
 				++iter_begin;
 		}
 	}
-	bool compare_with_vector(list_type &list, const vector_type vec) {
-		iterator iter = list.begin();
+	bool compare_with_vector(const list_type &list, const vector_type vec) {
+		const_iterator iter = list.begin();
 		for (auto v : vec) {
 			if (*iter != v)
 				return false;

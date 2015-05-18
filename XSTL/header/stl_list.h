@@ -15,15 +15,26 @@ namespace XX {
 	};
 
 	//链表迭代器
-	template<typename T>
-	struct _list_iterator:public iterator<bidirectional_iterator_tag, T> {
+	template<typename T,typename Ref,typename Ptr>
+	struct _list_iterator{
+
+		using iterator_category = bidirectional_iterator_tag;
+		using value_type = T;
+		using difference_type = ptrdiff_t;
+		using pointer = Ptr;
+		using reference = Ref;
+
+		using iterator = _list_iterator<T, T&, T*>;
+		using const_iterator = _list_iterator<T, const T&, const T*>;
+		using self = _list_iterator<T, Ref, Ptr>;
+
 		using link_type = _list_node<T> *;
 		//用来保存迭代器对应的结点指针
 		link_type node;
 		//构造函数
 		_list_iterator(link_type x):node(x){}//由于此构造函数，linke_type 类型可隐式转换成_list_iterator
 		_list_iterator(){}
-		_list_iterator(const _list_iterator &x):node(x.node){}
+		_list_iterator(const iterator &x):node(x.node){}
 		bool operator==(const _list_iterator &x) {
 			return node == x.node;
 		}
@@ -37,21 +48,21 @@ namespace XX {
 			return &(operator*());
 		}
 
-		_list_iterator  &operator++() {
+		self  &operator++() {
 			node = node->next;
 			return *this;
 		}
-		_list_iterator operator++(int) {
-			_list_iterator temp = *this;
+		self operator++(int) {
+			self temp = *this;
 			node = node->next;
 			return temp;
 		}
-		_list_iterator& operator--() {
+		self& operator--() {
 			node = node->prev;
 			return *this;
 		}
-		_list_iterator operator--(int) {
-			_list_iterator temp = *this;
+		self operator--(int) {
+			self temp = *this;
 			node = node->prev;
 			return temp;
 		}
@@ -62,7 +73,8 @@ namespace XX {
 	public:
 		using list_node = _list_node<T>;
 		using list_link = list_node *;
-		using iterator = _list_iterator<T>;
+		using iterator = _list_iterator<T,T&,T*>;
+		using const_iterator = _list_iterator<T, const T&, const T*>;
 		//using const_iterator = const iterator;
 		//构造函数
 		list() {
@@ -73,8 +85,8 @@ namespace XX {
 		//前闭后开的区间
 		iterator begin() { return node->next; }
 		iterator end() { return node; }
-		//const_iterator begin() const { return node->next; }
-		//const_iterator end() const { return node; }
+		const_iterator begin() const { return node->next; }
+		const_iterator end() const { return node; }
 		//头尾插入元素
 		void push_back(const T &x) {
 			insert(node, x);

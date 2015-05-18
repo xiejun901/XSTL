@@ -19,8 +19,8 @@ bool test_list_iterator() {
 		node = node->next;
 		node->data = i;
 	}
-	_list_iterator<int> iter1(head->next);
-	_list_iterator<int> end(nullptr);
+	_list_iterator<int,int&,int*> iter1(head->next);
+	_list_iterator<int, int&, int*> end(nullptr);
 	int i = 0;
 	while (iter1 != end) {
 		if (*iter1 != vec[i++]) {
