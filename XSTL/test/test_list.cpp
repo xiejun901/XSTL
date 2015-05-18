@@ -1,4 +1,5 @@
 #include"stl_list.h"
+#include"test_list.h"
 #include<vector>
 #include<iostream>
 using XX::_list_node;
@@ -139,3 +140,12 @@ bool test_list() {
 		cout << "test no pass" << endl;
 	return ret;
 }
+
+bool test_list_protype() {
+	Test_List<int> tlist(cout);
+	tlist.print_list( tlist.creat_list_from_vector(XX::vector<int>{1, 2, 3, 4, 5, 6}));
+	cout << endl;
+	tlist.test_transfer();
+	return true;
+}
+

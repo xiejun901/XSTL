@@ -63,6 +63,7 @@ namespace XX {
 		using list_node = _list_node<T>;
 		using list_link = list_node *;
 		using iterator = _list_iterator<T>;
+		//using const_iterator = const iterator;
 		//构造函数
 		list() {
 			node=get_node();
@@ -72,6 +73,8 @@ namespace XX {
 		//前闭后开的区间
 		iterator begin() { return node->next; }
 		iterator end() { return node; }
+		//const_iterator begin() const { return node->next; }
+		//const_iterator end() const { return node; }
 		//头尾插入元素
 		void push_back(const T &x) {
 			insert(node, x);
@@ -147,7 +150,17 @@ namespace XX {
 			destroy(&p->data);
 			put_node(p);
 		}
-		
+	public:
+		//迁移操作
+		void transfer(iterator position, iterator first, iterator last) {
+			last.node->prev->next = position.node;
+			position.node->prev->next = first.node;
+			list_link temp = position.node->prev;
+			position.node->prev = last.node->prev;
+			first.node->prev->next = last.node;
+			last.node->prev = first.node->prev;
+			first.node->prev = temp;
+		}
 
 		
 	};
