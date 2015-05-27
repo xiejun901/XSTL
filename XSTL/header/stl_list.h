@@ -140,6 +140,67 @@ namespace XX {
 			destroy_node(pos.node);
 			return temp;
 		}
+		//remove指定元素
+		void remove(const T&x) {
+			iterator first = begin();
+			iterator last = end();
+			while (first != last) {
+				iterator next = first;
+				++next;
+				if (*first == x)
+					erase(first);
+				first=next;
+			}
+		}
+		//移除连续的相同元素，使只剩下一个
+		void unique() {
+			iterator first = begin();
+			iterator last = end();
+			if (first == last)
+				return;
+			iterator next = first;
+			while (next!=last) {
+				++next;
+				if (*first == *next) {
+					erase(next);
+				}
+				else {
+					first = next;
+				}
+				next = first;
+			}
+		}
+		//splice拼接链表
+		void splice(iterator pos, list &other) {
+			if(!other.empty())
+				transfer(pos, other.begin(), other.end());
+		}
+		void splice(iterator pos, list &other, iterator i) {
+			iterator j = i;
+			++j;
+			if (i == pos || j == pos)
+				return;
+			transfer(pos, i, j);
+		}
+		//合并，将两个已经排序的链表合成一个链表
+		void merge(list &x) {
+			iterator first1 = begin();
+			iterator last1 = end();
+			iterator first2 = x.begin();
+			iterator last2 = x.end();
+			while (first1 != last1&&first2 != last2) {
+				if (*first2 < *first1) {
+					iterator next = first2;
+					transfer(first1, first2, ++next);
+					first2 = next;
+				}
+				else
+					++first1;
+			}
+			if (first2 != last2) {
+				transfer(last1, first2, last2);
+			}
+		}
 	private:
 		using list_node_allocator = simple_alloc<list_node, Alloc>;
 		list_link node;//因为链表组成一个环状，所以只需要一个节点就能表示链表
@@ -162,16 +223,18 @@ namespace XX {
 			destroy(&p->data);
 			put_node(p);
 		}
-	public:
+	//public:
 		//迁移操作
 		void transfer(iterator position, iterator first, iterator last) {
-			last.node->prev->next = position.node;
-			position.node->prev->next = first.node;
-			list_link temp = position.node->prev;
-			position.node->prev = last.node->prev;
-			first.node->prev->next = last.node;
-			last.node->prev = first.node->prev;
-			first.node->prev = temp;
+			if (position != last) {
+				last.node->prev->next = position.node;
+				position.node->prev->next = first.node;
+				list_link temp = position.node->prev;
+				position.node->prev = last.node->prev;
+				first.node->prev->next = last.node;
+				last.node->prev = first.node->prev;
+				first.node->prev = temp;
+			}
 		}
 
 		

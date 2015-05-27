@@ -146,6 +146,10 @@ bool test_list_protype() {
 	tlist.print_list( tlist.creat_list_from_vector(XX::vector<int>{1, 2, 3, 4, 5, 6}));
 	cout << endl;
 	tlist.test_transfer();
+	tlist.test_remove();
+	tlist.test_unique();
+	tlist.test_splice();
+	tlist.test_merge();
 	return true;
 }
 
