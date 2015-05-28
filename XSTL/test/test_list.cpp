@@ -150,6 +150,9 @@ bool test_list_protype() {
 	tlist.test_unique();
 	tlist.test_splice();
 	tlist.test_merge();
+	tlist.test_ctor();
+	tlist.test_operator();
+	tlist.test_assign();
 	return true;
 }
 

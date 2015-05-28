@@ -75,6 +75,7 @@ namespace XX {
 		using list_link = list_node *;
 		using iterator = _list_iterator<T,T&,T*>;
 		using const_iterator = _list_iterator<T, const T&, const T*>;
+		using size_type = size_t;
 		//using const_iterator = const iterator;
 		//构造函数
 		list() {
@@ -82,11 +83,122 @@ namespace XX {
 			node->next = node;
 			node->prev = node;
 		};
+		list(size_type count,const T&value) {
+			node = get_node();
+			list_link temp = node;
+			while (count--) {
+				temp->next = creat_node(value);
+				temp->next->prev = temp;
+				temp = temp->next;
+			}
+			temp->next = node;
+			node->prev = temp;
+		}
+		list(const list& other){
+			node = get_node();
+			list_link temp = node;
+			const_iterator first = other.cbegin();
+			const_iterator last = other.cend();
+			while (first != last){
+				temp->next = creat_node(*first);
+				temp->next->prev = temp;
+				temp = temp->next;
+				++first;
+			}
+			temp->next = node;
+			node->prev = temp;
+		}
+		list(list && other) {
+			node = other.node;
+			other.node = nullptr;
+		}
+		list(std::initializer_list<T> ilist) {
+			node = get_node();
+			list_link temp = node;
+			typename std::initializer_list<T>::iterator first = ilist.begin();
+			typename std::initializer_list<T>::iterator last = ilist.end();
+			while (first != last) {
+				temp->next = creat_node(*first);
+				temp->next->prev = temp;
+				temp = temp->next;
+				++first;
+			}
+			temp->next = node;
+			node->prev = temp;
+		}
+		//operat=
+		list& operator=(const list&other) {
+			if (this != &other) {
+				iterator first1 = begin();
+				iterator last1 = end();
+				const_iterator first2 = other.cbegin();
+				const_iterator last2 = other.cend();
+				while (first1 != last1&&first2 != last2) {
+					*first1++ = *first2++;
+				}
+				if (first2 == last2) {
+					erase(first1, last1);
+				}
+				else
+				{
+					insert(last1, first2, last2);
+				}
+			}
+			return *this;
+		}
+		list& operator=(list &&other) {
+			node = other.node;
+			other.node = nullptr;
+			return *this;
+		}
+		list& operator=(std::initializer_list<T> ilist) {
+			iterator first1 = begin();
+			iterator last1 = end();
+			typename std::initializer_list<T>::iterator first2 = ilist.begin();
+			typename std::initializer_list<T>::iterator last2 = ilist.end();
+			while (first1 != last1&&first2 != last2) {
+				*first1++ = *first2++;
+			}
+			if (first2 == last2) {
+				erase(first1, last1);
+			}
+			else
+			{
+				insert(last1, first2, last2);
+			}
+			return *this;
+		}
+		//assign
+		void assign(size_type count, const T&value) {
+			iterator first = begin();
+			iterator last = end();
+			while (first != last&&count--) {
+				*first++ = value;
+			}
+			if (count == 0)
+				erase(first, last);
+			else
+				insert(last, count, value);
+		}
+		//析构函数
+		~list() {
+			if (node != nullptr) {
+				list_link curr = node->next;
+				while (curr != node) {
+					list_link next = curr->next;
+					destroy_node(curr);
+					curr = next;
+				}
+				destroy(node);
+			}
+		}
 		//前闭后开的区间
 		iterator begin() { return node->next; }
 		iterator end() { return node; }
 		const_iterator begin() const { return node->next; }
 		const_iterator end() const { return node; }
+		const_iterator cbegin() const { return node->next; }
+		const_iterator cend() const { return node; }
 		//头尾插入元素
 		void push_back(const T &x) {
 			insert(node, x);
@@ -132,6 +244,16 @@ namespace XX {
 			pos.node->prev = temp;
 			return temp;
 		}
+		template<typename InputIter>
+		void insert(iterator pos, InputIter first, InputIter last) {
+			while (first != last) {
+				insert(pos, *first++);
+			}
+		}
+		void insert(iterator pos, size_type count, const T&value) {
+			while (count--)
+				insert(pos, value);
+		}
 		//移除迭代器所指的元素
 		iterator erase(iterator pos) {
 			pos.node->prev->next = pos.node->next;
@@ -139,6 +261,12 @@ namespace XX {
 			list_link temp = pos.node->next;
 			destroy_node(pos.node);
 			return temp;
+		}
+		iterator erase(iterator first, iterator last) {
+			while (first != last){
+				erase(first++);
+			}
+			return last;
 		}
 		//remove指定元素
 		void remove(const T&x) {

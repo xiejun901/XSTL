@@ -1,5 +1,6 @@
 #include"test_list.h"
 #include"test_vector.h"
+#include<list>
 #include<windows.h>
 int main() {
 	/*test_list_iterator();

@@ -42,6 +42,20 @@ public:
 		}
 		return true;
 	}
+	template<typename Container1,typename Container2>
+	bool container_compare(const Container1 &c1,const Container2 &c2) {
+		auto first1 = c1.cbegin();
+		auto last1 = c1.cend();
+		auto first2 = c2.cbegin();
+		auto last2 = c2.cend();
+		while (first1 != last1&&first2 != last2) {
+			if (*first1++ != *first2++)
+				return false;
+		}
+		if (first1 == last1&&first2 == last2)
+			return true;
+		return false;
+	}
 public:
 	Test_List(std::ostream &o):os(o){}
 	void test_transfer() {
@@ -159,6 +173,107 @@ public:
 		print_list(list2);
 		os << std::endl;
 		if (compare_with_vector(list, vector_type{ 1,1,2,4,5,6,6,7,8,9,13,14,14,16,18,19 }))
+			os << "XX::list::unique() test succeed." << std::endl;
+		else
+			os << "XX::list::unique() test failed." << std::endl;
+	}
+	void test_ctor() {
+		os << "²âÊÔlist(size_type count,const T&value= T()):" << std::endl;
+		list_type list(10, 5);
+		os << "list: ";
+		print_list(list);
+		os << std::endl;
+		if (compare_with_vector(list, vector_type(10,5)))
+			os << "XX::list::unique() test succeed." << std::endl;
+		else
+			os << "XX::list::unique() test failed." << std::endl;
+		os << "²âÊÔlist(const list& other):" << std::endl;
+		list_type list2(list);
+		os << "list: ";
+		print_list(list);
+		os << std::endl;
+		os << "list2: ";
+		print_list(list2);
+		os << std::endl;
+		if (compare_with_vector(list2, vector_type(10, 5)))
+			os << "XX::list::unique() test succeed." << std::endl;
+		else
+			os << "XX::list::unique() test failed." << std::endl;
+
+		os << "²âÊÔlist(std::initializer_list<T> ilist):" << std::endl;
+		list_type list3{1,3,5,7,9,8,5,3,2,4,5,6,9,2};
+		os << "list3: ";
+		print_list(list3);
+		os << std::endl;
+		if (compare_with_vector(list3, vector_type{ 1,3,5,7,9,8,5,3,2,4,5,6,9,2 }))
+			os << "XX::list::unique() test succeed." << std::endl;
+		else
+			os << "XX::list::unique() test failed." << std::endl;
+	}
+	void test_operator(){
+		os << "²âÊÔoperator=():" << std::endl;
+		list_type list1{ 1,3,5,7,9,8,5,3,2,4,5,6,9,2 };
+		list_type list2;
+		list_type list3(5, 6);
+		list_type list4(17, 9);
+		list_type list5(5, 9);
+		os << "list1: ";
+		print_list(list1);
+		os << std::endl;
+		os << "list2: ";
+		print_list(list2);
+		os << std::endl;
+		os << "list3: ";
+		print_list(list3);
+		os << std::endl;
+		os << "list4: ";
+		print_list(list4);
+		os << std::endl;
+		list1 = list1;
+		list2 = list1;
+		list3 = list1;
+		list4 = list1;
+		list5 = { 1,2,3,4,5,6,7,8,9,4,2,3,5,6,5,4,5,6 };
+		os << "list1: ";
+		print_list(list1);
+		os << std::endl;
+		os << "list2: ";
+		print_list(list2);
+		os << std::endl;
+		os << "list3: ";
+		print_list(list3);
+		os << std::endl;
+		os << "list4: ";
+		print_list(list4);
+		os << std::endl;
+		os << "list5: ";
+		print_list(list5);
+		os << std::endl;
+		list_type list6{ 1,2,3,4,5,6,7,8,9,4,2,3,5,6,5,4,5,6 };
+		if (container_compare(list1, list2)&& container_compare(list1, list3)&& container_compare(list1, list4)&& container_compare(list5, list6))
+			os << "XX::list::unique() test succeed." << std::endl;
+		else
+			os << "XX::list::unique() test failed." << std::endl;
+	}
+	void test_assign() {
+		os << "²âÊÔassign():" << std::endl;
+		list_type list1{ 1,2,3,4,5,6,7,8,9 };
+		list_type list2(list1);
+		os << "list1: ";
+		print_list(list1);
+		os << std::endl;
+		os << "list2: ";
+		print_list(list2);
+		os << std::endl;
+		list1.assign(10, 9);
+		list2.assign(32, 7);
+		os << "list1: ";
+		print_list(list1);
+		os << std::endl;
+		os << "list2: ";
+		print_list(list2);
+		os << std::endl;
+		if (container_compare(list1, list_type(10,9)) && container_compare(list2, list_type(32,7)))
 			os << "XX::list::unique() test succeed." << std::endl;
 		else
 			os << "XX::list::unique() test failed." << std::endl;
