@@ -4,6 +4,7 @@
 #include"stl_iterator.h"
 #include"stl_alloc.h"
 #include"stl_construct.h"
+#include"type_traits.h"
 /*stl链表，双向链表，构成环状结构*/
 namespace XX {
 	//链表结点结构
@@ -179,6 +180,11 @@ namespace XX {
 				erase(first, last);
 			else
 				insert(last, count, value);
+		}
+		template<typename InputIter>
+		void assign(InputIter first, InputIter last) {
+			using integral = typename is_integer<InputIter>::_integral;
+			_assign(first, last, integral());
 		}
 		//析构函数
 		~list() {
@@ -364,8 +370,24 @@ namespace XX {
 				first.node->prev = temp;
 			}
 		}
-
-		
+		template<typename InputIter>
+		void _assign(InputIter first, InputIter last, _false_type) {
+			iterator first1 = begin();
+			iterator last1 = end();
+			while (first1 != last1&&first != last) {
+				*first1 = *first;
+				++first1;
+				++first;
+			}
+			if (first == last)
+				erase(first1, last1);
+			else
+				insert(last1, first, last);
+		}
+		template<typename InputIter>
+		void _assign(InputIter first, InputIter last, _true_type) {
+			assign((size_type)first, (T)last);
+		}
 	};
 	
 }

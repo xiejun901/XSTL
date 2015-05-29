@@ -2,6 +2,7 @@
 #include"test_vector.h"
 #include<list>
 #include<windows.h>
+#include"type_traits.h"
 int main() {
 	/*test_list_iterator();
 	test_list();

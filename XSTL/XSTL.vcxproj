@@ -81,6 +81,7 @@
     <ClInclude Include="header\stl_vector.h" />
     <ClInclude Include="header\test\test_list.h" />
     <ClInclude Include="header\test\test_vector.h" />
+    <ClInclude Include="type_traits.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -277,6 +277,43 @@ public:
 			os << "XX::list::unique() test succeed." << std::endl;
 		else
 			os << "XX::list::unique() test failed." << std::endl;
+
+
+		os << "assign(InputIter first, InputIter last):" << std::endl;
+		int a[10] = { 1,2,3,4,5,6,7,8,9,10 };
+		list_type list3(5,9);
+		list_type list4(10, 7);
+		list_type list5(13, 33);
+		os << "list1: ";
+		print_list(list1);
+		os << std::endl;
+		os << "list3: ";
+		print_list(list3);
+		os << std::endl;
+		os << "list4: ";
+		print_list(list4);
+		os << std::endl;
+		iterator iter1= list1.begin();
+		iterator iter2= list1.end();
+		list3.assign(iter1, iter2);
+		list4.assign(iter1, iter2);
+		list5.assign(a, a + 9);
+		os << "list1: ";
+		print_list(list1);
+		os << std::endl;
+		os << "list3: ";
+		print_list(list3);
+		os << std::endl;
+		os << "list4: ";
+		print_list(list4);
+		os << std::endl;
+		os << "list5: ";
+		print_list(list5);
+		os << std::endl;
+		if (container_compare(list1,list3) && container_compare(list1, list4))
+			os << "XX::list::unique() test succeed." << std::endl;
+		else
+			os << "XX::list::unique() test failed." << std::endl;
 	}
 };
 #endif
