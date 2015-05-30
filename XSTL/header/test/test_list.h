@@ -44,10 +44,10 @@ public:
 	}
 	template<typename Container1,typename Container2>
 	bool container_compare(const Container1 &c1,const Container2 &c2) {
-		auto first1 = c1.cbegin();
-		auto last1 = c1.cend();
-		auto first2 = c2.cbegin();
-		auto last2 = c2.cend();
+		auto first1 = c1.begin();
+		auto last1 = c1.end();
+		auto first2 = c2.begin();
+		auto last2 = c2.end();
 		while (first1 != last1&&first2 != last2) {
 			if (*first1++ != *first2++)
 				return false;
@@ -297,7 +297,7 @@ public:
 		iterator iter2= list1.end();
 		list3.assign(iter1, iter2);
 		list4.assign(iter1, iter2);
-		list5.assign(a, a + 9);
+		list5.assign({3,6,5,8,9,6,4,8,9,1,2,22});
 		os << "list1: ";
 		print_list(list1);
 		os << std::endl;
@@ -310,10 +310,43 @@ public:
 		os << "list5: ";
 		print_list(list5);
 		os << std::endl;
-		if (container_compare(list1,list3) && container_compare(list1, list4))
+		std::initializer_list<int> xx{ 3,6,5,8,9,6,4,8,9,1,2,22 };
+		if (container_compare(list1,list3) && container_compare(list1, list4) && container_compare(list5,xx ))
 			os << "XX::list::unique() test succeed." << std::endl;
 		else
 			os << "XX::list::unique() test failed." << std::endl;
+	}
+	void test_front() {
+		os << "²âÊÔassign():" << std::endl;
+		list_type list1{ 1,2,3,4,5,6,7,8,9 };
+		os << "list1: ";
+		print_list(list1);
+		os << std::endl;
+		list1.front() = 99;
+		list1.back() = 77;
+		os << "list1: ";
+		print_list(list1);
+		os << std::endl;
+	}
+	void test_insert() {
+		os << "²âÊÔinsert:" << std::endl;
+		list_type list{ 1,2,3,4,5,6,7,8,9 };
+		os << "list: ";
+		print_list(list);
+		os << std::endl;
+		list.insert(list.begin(), 5, 6);
+		os << "list: ";
+		print_list(list);
+		os << std::endl;
+		int a[10] = { 1,2,3,4,5,6,7,8,9,10 };
+		list.insert(list.end(), a, a + 5);
+		os << "list: ";
+		print_list(list);
+		os << std::endl;
+		list_type list2(a, a + 7);
+		os << "list2: ";
+		print_list(list2);
+		os << std::endl;
 	}
 };
 #endif

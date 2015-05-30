@@ -77,6 +77,8 @@ namespace XX {
 		using iterator = _list_iterator<T,T&,T*>;
 		using const_iterator = _list_iterator<T, const T&, const T*>;
 		using size_type = size_t;
+		using reference = T&;
+		using const_reference = const T&;
 		//using const_iterator = const iterator;
 		//构造函数
 		list() {
@@ -94,6 +96,14 @@ namespace XX {
 			}
 			temp->next = node;
 			node->prev = temp;
+		}
+		template<typename InputIter>
+		list(InputIter first,InputIter last)
+		{
+			node = get_node();
+			node->next = node;
+			node->prev = node;
+			insert(end(), first, last);
 		}
 		list(const list& other){
 			node = get_node();
@@ -186,6 +196,22 @@ namespace XX {
 			using integral = typename is_integer<InputIter>::_integral;
 			_assign(first, last, integral());
 		}
+		void assign(std::initializer_list<T> ilist) {
+			iterator first1 = begin();
+			iterator last1 = end();
+			typename std::initializer_list<T>::iterator first2 = ilist.begin();
+			typename std::initializer_list<T>::iterator last2 = ilist.end();
+			while (first1 != last1&&first2 != last2) {
+				*first1++ = *first2++;
+			}
+			if (first2 == last2) {
+				erase(first1, last1);
+			}
+			else
+			{
+				insert(last1, first2, last2);
+			}
+		}
 		//析构函数
 		~list() {
 			if (node != nullptr) {
@@ -197,6 +223,19 @@ namespace XX {
 				}
 				destroy(node);
 			}
+		}
+		//element access
+		reference front() {
+			return *(begin());
+		}
+		const_reference front() const {
+			return *(cbegin());
+		}
+		reference back() {
+			return *(--end());
+		}
+		const_reference back() const {
+			return *(--cend());
 		}
 		//前闭后开的区间
 		iterator begin() { return node->next; }
@@ -220,6 +259,18 @@ namespace XX {
 		void pop_front() {
 			erase(begin());
 		}
+		//resize
+		void resize(size_type count, T value = T()) {
+			iterator first = begin();
+			iterator last = end();
+			whie(first++ != last&&count--) {
+
+			}
+			if (count == 0)
+				erase(first, last);
+			else
+				insert(last, count, value);
+		}
 		//清空整个链表的元素，最后剩下的是一个空链表（即只有node一个节点）
 		void clear() {
 			list_link curr = node->next;
@@ -232,17 +283,25 @@ namespace XX {
 			node->prev = node;
 		}
 		//capacity相关函数
-		bool empty() {
+		bool empty() const{
 			return begin() == end();//node == node->next;
 		}
-		size_t size() {
+		size_t size() const {
 			return distance(begin(), end());
 		}
-		bool max_size() {
+		bool max_size() const{
 			return size_t(-1) / sizeof(list_node);
 		}
 		//在指定迭代器之前插入元素，
-		iterator insert(iterator pos, const T &x) {
+		iterator insert(const_iterator pos, const T &x) {
+			list_link temp = creat_node(x);
+			temp->prev = pos.node->prev;
+			pos.node->prev->next = temp;
+			temp->next = pos.node;
+			pos.node->prev = temp;
+			return temp;
+		}
+		iterator insert(const_iterator pos, T&&x) {
 			list_link temp = creat_node(x);
 			temp->prev = pos.node->prev;
 			pos.node->prev->next = temp;
@@ -252,13 +311,28 @@ namespace XX {
 		}
 		template<typename InputIter>
 		void insert(iterator pos, InputIter first, InputIter last) {
-			while (first != last) {
-				insert(pos, *first++);
-			}
+			using integral = typename is_integer<InputIter>::_integral;
+			insert_dispatch(pos, first, last, integral());
 		}
 		void insert(iterator pos, size_type count, const T&value) {
 			while (count--)
 				insert(pos, value);
+		}
+		iterator insert(const_iterator pos, std::initializer_list<T> ilist) {
+			typename std::initializer_list<T>::iterator first = ilist.begin();
+			typename std::initializer_list<T>::iterator last = ilist.end();
+			while (first != last)
+				insert(pos, *first++);
+		}
+		template<typename Integer>
+		void insert_dispatch(iterator pos, Integer count, Integer value,_true_type) {
+			insert(pos, (size_type)count, value);
+		}
+		template<typename InputIter>
+		void insert_dispatch(iterator pos, InputIter first, InputIter last, _false_type) {
+			while (first != last) {
+				insert(pos, *first++);
+			}
 		}
 		//移除迭代器所指的元素
 		iterator erase(iterator pos) {
@@ -352,6 +426,11 @@ namespace XX {
 			construct(&p->data, x);
 			return p;
 		}
+		list_link creat_node(const T &&x) {
+			list_link p = list_node_allocator::allocate();
+			construct(&p->data, x);
+			return p;
+		}
 		//删除node
 		void destroy_node(list_link p) {
 			destroy(&p->data);
@@ -388,6 +467,11 @@ namespace XX {
 		void _assign(InputIter first, InputIter last, _true_type) {
 			assign((size_type)first, (T)last);
 		}
+
+		/*template<typename Integer>
+		void initialize_aux(Integer count, Inerger value, _true_type) {
+			list(count, value);
+		}*/
 	};
 	
 }

@@ -153,6 +153,8 @@ bool test_list_protype() {
 	tlist.test_ctor();
 	tlist.test_operator();
 	tlist.test_assign();
+	tlist.test_front();
+	tlist.test_insert();
 	return true;
 }
 
