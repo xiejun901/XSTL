@@ -3,7 +3,7 @@
 #include<list>
 #include<windows.h>
 #include"type_traits.h"
-int get() { return 5; }
+using namespace std;
 int main() {
 	/*test_list_iterator();
 	test_list();

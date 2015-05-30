@@ -324,16 +324,6 @@ namespace XX {
 			while (first != last)
 				insert(pos, *first++);
 		}
-		template<typename Integer>
-		void insert_dispatch(iterator pos, Integer count, Integer value,_true_type) {
-			insert(pos, (size_type)count, value);
-		}
-		template<typename InputIter>
-		void insert_dispatch(iterator pos, InputIter first, InputIter last, _false_type) {
-			while (first != last) {
-				insert(pos, *first++);
-			}
-		}
 		//移除迭代器所指的元素
 		iterator erase(iterator pos) {
 			pos.node->prev->next = pos.node->next;
@@ -390,6 +380,12 @@ namespace XX {
 				return;
 			transfer(pos, i, j);
 		}
+		//swap
+		void swap(list &other) {
+			list_link temp = other.node;
+			other.node = node;
+			node = temp;
+		}
 		//合并，将两个已经排序的链表合成一个链表
 		void merge(list &x) {
 			iterator first1 = begin();
@@ -408,6 +404,28 @@ namespace XX {
 			if (first2 != last2) {
 				transfer(last1, first2, last2);
 			}
+		}
+		void sort() {
+			if (node->next == node || node->next->next == node)
+				return;
+			list carry;
+			list counter[64];
+			int fill = 0;
+			while (!empty()) {
+				carry.splice(carry.begin(), *this, begin());
+				int i = 0;
+				while (i < fill&&!counter[i].empty()) {
+					counter[i].merge(carry);
+					carry.swap(counter[i++]);
+				}
+				counter[i].swap(carry);
+				if (i == fill)
+					++fill;
+			}
+			for (int i = 1;i < fill;++i) {
+				counter[i].merge(counter[i - 1]);
+			}
+			swap(counter[fill - 1]);
 		}
 	private:
 		using list_node_allocator = simple_alloc<list_node, Alloc>;
@@ -467,7 +485,16 @@ namespace XX {
 		void _assign(InputIter first, InputIter last, _true_type) {
 			assign((size_type)first, (T)last);
 		}
-
+		template<typename Integer>
+		void insert_dispatch(iterator pos, Integer count, Integer value, _true_type) {
+			insert(pos, (size_type)count, value);
+		}
+		template<typename InputIter>
+		void insert_dispatch(iterator pos, InputIter first, InputIter last, _false_type) {
+			while (first != last) {
+				insert(pos, *first++);
+			}
+		}
 		/*template<typename Integer>
 		void initialize_aux(Integer count, Inerger value, _true_type) {
 			list(count, value);

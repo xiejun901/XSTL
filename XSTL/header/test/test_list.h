@@ -4,6 +4,7 @@
 #include "stl_vector.h"
 #include"stl_list.h"
 #include<iostream>
+#include<random>
 bool test_list_iterator();
 bool test_list();
 bool test_list_protype();
@@ -17,6 +18,17 @@ private:
 	using iterator = typename XX::list<T>::iterator;
 	using const_iterator = typename XX::list<T>::const_iterator;
 	std::ostream &os;
+	void shuffle(vector_type &vec) {
+		int n = vec.size();
+		std::default_random_engine e;
+		std::uniform_int_distribution<int> u(0, n - 1);
+		for (int i = 0;i < n;++i) {
+			int k = u(e);
+			int temp = vec[k];
+			vec[k] = vec[i];
+			vec[i] = temp;
+		}
+	}
 public:
 	list_type creat_list_from_vector(const vector_type &vec) {
 		list_type list;
@@ -347,6 +359,24 @@ public:
 		os << "list2: ";
 		print_list(list2);
 		os << std::endl;
+	}
+	void test_sort() {
+		os << "²âÊÔsort:" << std::endl;
+		vector_type vec1 = { 1,2,3,4,5,6,7,8,9,10,11,12,13 };
+		vector_type vec2 = vec1;
+		shuffle(vec2);
+		list_type list(vec2.begin(), vec2.end());
+		os << "list: ";
+		print_list(list);
+		os << std::endl;
+		list.sort();
+		os << "list: ";
+		print_list(list);
+		os << std::endl;
+		if (container_compare(list, vec1))
+			os << "test succeed." << std::endl;
+		else
+			os << "test failed." << std::endl;
 	}
 };
 #endif

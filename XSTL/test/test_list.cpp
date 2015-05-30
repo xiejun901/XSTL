@@ -155,6 +155,7 @@ bool test_list_protype() {
 	tlist.test_assign();
 	tlist.test_front();
 	tlist.test_insert();
+	tlist.test_sort();
 	return true;
 }
 
