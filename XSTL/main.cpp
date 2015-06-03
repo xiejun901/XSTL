@@ -3,6 +3,7 @@
 #include<list>
 #include<windows.h>
 #include"type_traits.h"
+#include"stl_deque.h"
 using namespace std;
 int main() {
 	/*test_list_iterator();
