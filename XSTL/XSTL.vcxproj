@@ -75,6 +75,7 @@
     <ClInclude Include="header\allocator.h" />
     <ClInclude Include="header\stl_alloc.h" />
     <ClInclude Include="header\stl_construct.h" />
+    <ClInclude Include="header\stl_deque.h" />
     <ClInclude Include="header\stl_iterator.h" />
     <ClInclude Include="header\stl_list.h" />
     <ClInclude Include="header\stl_uninitialized.h" />
@@ -82,7 +83,6 @@
     <ClInclude Include="header\test\test_list.h" />
     <ClInclude Include="header\test\test_vector.h" />
     <ClInclude Include="header\type_traits.h" />
-    <ClInclude Include="stl_deque.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
