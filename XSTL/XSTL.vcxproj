@@ -68,8 +68,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="test.cpp" />
     <ClCompile Include="test\test_list.cpp" />
     <ClCompile Include="test\test_vector.cpp" />
+    <ClCompile Include="test_deque.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\allocator.h" />
@@ -80,6 +82,8 @@
     <ClInclude Include="header\stl_list.h" />
     <ClInclude Include="header\stl_uninitialized.h" />
     <ClInclude Include="header\stl_vector.h" />
+    <ClInclude Include="header\test\test.h" />
+    <ClInclude Include="header\test\test_deque.h" />
     <ClInclude Include="header\test\test_list.h" />
     <ClInclude Include="header\test\test_vector.h" />
     <ClInclude Include="header\type_traits.h" />

@@ -4,15 +4,11 @@
 #include<windows.h>
 #include"type_traits.h"
 #include"stl_deque.h"
+#include"test_deque.h"
 using namespace std;
 int main() {
-	/*test_list_iterator();
-	test_list();
-	test_construtor();
-	test_assign();
-	test_at();
-	test_modify();*/
-	test_list_protype();
+	//test_list_protype();
+	test_deque();
 	system("pause");
 	return 0;
 }
