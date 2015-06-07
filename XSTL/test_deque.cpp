@@ -8,6 +8,6 @@ using std::cout;
 using std::endl;
 void test_deque() {
 	Test_Deque tdq;
-	tdq.test_push_back();
-
+	tdq.test_push_pop();
+	tdq.test_ctor();
 }

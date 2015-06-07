@@ -5,6 +5,7 @@
 namespace XX {
 	struct TestStruct {
 		friend std::ostream &operator<<(std::ostream& os, const TestStruct &x);
+		TestStruct(int x):a(x),b(x*x){}
 		TestStruct(int _a,int _b):a(_a),b(_b){}
 		int a;
 		int b;
@@ -18,7 +19,7 @@ namespace XX {
 		}
 	};
 	template<typename Container1,typename Container2>
-	bool is_container_equal(Container1 c1, Container2 c2) {
+	bool is_container_equal(Container1 &c1, Container2 &c2) {
 		typename Container1::iterator iter1 = c1.begin();
 		typename Container2::iterator iter2 = c2.begin();
 		while (iter1 != c1.end() && iter2 != c2.end()) {
@@ -32,13 +33,13 @@ namespace XX {
 		return true;
 	}
 	template<typename Container>
-	void print_container(Container c) {
+	void print_container(std::ostream &os,Container &c) {
 		typename Container::iterator iter = c.begin();
 		while (iter != c.end()) {
-			std::cout << *iter << ' ';
+			os << *iter << ' ';
 			++iter;
 		}
-		std::cout << std::endl;
+		os << std::endl;
 	}
 };
 #endif
