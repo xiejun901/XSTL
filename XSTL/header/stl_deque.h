@@ -152,7 +152,7 @@ namespace XX {
 		void pop_front();
 	private:
 		void fill_initialize(size_t n, const value_type&value);
-		void cread_map_and_nodes(size_t element_size);
+		void creat_map_and_nodes(size_t element_size);
 		void push_back_aux(const T&value);
 		void push_front_aux(const T&value);
 		pointer allocate_node() {
@@ -170,7 +170,7 @@ namespace XX {
 		template<typename InputIter>
 		void initial_deque_dispatch(InputIter first,InputIter last,_false_type);
 		template<typename InputIter>
-		void deque_range_initial(InputIter first, InputIter last, random_acess_iterator_tag);
+		void deque_range_initial(InputIter first, InputIter last, input_iterator_tag);
 		template<typename InputIter>
 		void deque_range_initial(InputIter first, InputIter last, forward_iterator_tag);
 	};
@@ -180,7 +180,7 @@ namespace XX {
 	}
 	template<typename T, typename Alloc = alloc, size_t BufSize>
 	deque<T, Alloc, BufSize>::deque() {
-		cread_map_and_nodes(0);
+		creat_map_and_nodes(0);
 	}
 	template<typename T, typename Alloc , size_t BufSize>
 	template<typename InputIter>
@@ -192,7 +192,12 @@ namespace XX {
 	template<typename T, typename Alloc, size_t BufSize>
 	template<typename Integer>
 	void deque<T, Alloc, BufSize>::initial_deque_dispatch(Integer n, Integer value, _true_type) {
-		deque(size_type(n), value_type(value));
+		creat_map_and_nodes(n);
+		map_pointer cur;
+		for (cur = start.node;cur < finish.node;++cur)
+			uninitialized_fill(*cur, *cur + deque_buf_size(BufSize, sizeof(T)), value);
+		uninitialized_fill(*cur, finish.cur, value);
+		//deque(size_type(n), value_type(value));
 	}
 	template<typename T, typename Alloc, size_t BufSize>
 	template<typename InputIter>
@@ -202,13 +207,25 @@ namespace XX {
 	}
 
 	template<typename T, typename Alloc , size_t BufSize> template<typename InputIter>
-	void deque<T, Alloc, BufSize>::deque_range_initial(InputIter first, InputIter last, random_acess_iterator_tag) {
-
+	void deque<T, Alloc, BufSize>::deque_range_initial(InputIter first, InputIter last, input_iterator_tag) {
+		creat_map_and_nodes(0);
+		for (;first != last;++first)
+			push_back(*first);
 	}
 
 	template<typename T, typename Alloc, size_t BufSize> template<typename InputIter>
 	void deque<T, Alloc, BufSize>::deque_range_initial(InputIter first, InputIter last, forward_iterator_tag) {
-
+		size_t n = 0;
+		n=distance(first, last);
+		creat_map_and_nodes(n);
+		map_pointer cur= start.node;
+		InputIter mid = first;
+		for (;cur < finish.node;++cur) {
+			advance(mid, deque_buf_size(BufSize, sizeof(T)));
+			uninitialized_copy(first, mid, *cur);
+			first = mid;
+		}
+		uninitialized_copy(first, last, finish.first);
 	}
 
 
@@ -284,7 +301,7 @@ namespace XX {
 	}
 	template<typename T, typename Alloc = alloc, size_t BufSize>
 	void deque<T, Alloc, BufSize>::fill_initialize(size_t n, const T&value) {
-		cread_map_and_nodes(n);
+		creat_map_and_nodes(n);
 		map_pointer cur;
 		for (cur = start.node;cur < finish.node;++cur)
 			uninitialized_fill(*cur, *cur + deque_buf_size(BufSize, sizeof(T)), value);
@@ -292,7 +309,7 @@ namespace XX {
 	}
 
 	template<typename T, typename Alloc = alloc, size_t BufSize>
-	void deque<T, Alloc, BufSize>::cread_map_and_nodes(size_t num_elements) {
+	void deque<T, Alloc, BufSize>::creat_map_and_nodes(size_t num_elements) {
 		//计算所需要的node数
 		size_t num_nodes = num_elements / deque_buf_size(BufSize,sizeof(T)) + 1;
 		map_size = max((size_t)initial_map_size,num_nodes + 2);

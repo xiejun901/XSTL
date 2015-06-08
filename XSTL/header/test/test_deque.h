@@ -2,6 +2,7 @@
 #define _TEST_DEQUE_H_
 #include"test\test.h"
 #include"stl_deque.h"
+#include"stl_vector.h"
 #include<windows.h>
 #include<deque>
 #include<fstream>
@@ -10,6 +11,7 @@ struct Test_Deque {
 	using T = XX::TestStruct;
 	using std_deque = std::deque<T>;
 	using xx_deque = XX::deque<T>;
+	using xx_vector = XX::vector<T>;
 
 	void test_push_pop() {
 		using std::cout;
@@ -60,6 +62,22 @@ struct Test_Deque {
 				dq1.pop_front();
 				dq2.pop_front();
 			}
+		}
+		{
+			xx_vector vec;
+			for (int i = 1;i < 999;++i) {
+				vec.push_back(i);
+			}
+			std_deque dq1(vec.begin(), vec.end());
+			xx_deque dq2(vec.begin(), vec.end());
+			assert(XX::is_container_equal(dq1, dq2)&& XX::is_container_equal(dq1, vec));
+		}
+		{
+			std::deque<int> dq1(77, 99);
+			XX::deque<int> dq2(77,99);
+			//XX::print_container(std::cout, dq1);
+			//XX::print_container(std::cout, dq2);
+			assert(XX::is_container_equal(dq1, dq2));
 		}
 	}
 };
