@@ -108,6 +108,64 @@ namespace XX {
 	inline void advance(InputIterator &i, Distance n) {
 		__advance(i, n, iterator_category(i));
 	}
+
+
+	//·´Ïòµü´úÆ÷
+	template<typename _Iterator>
+	class reverse_iterator {
+	protected:
+		_Iterator current;
+	public:
+		using iterator_category = typename iterator_traits<_Iterator>::iterator_category;
+		using value_type = typename iterator_traits<_Iterator>::value_type;
+		using difference_type = typename iterator_traits<_Iterator>::difference_type;
+		using pointer = typename iterator_traits<_Iterator>::pointer;
+		using reference = typename iterator_traits<_Iterator>::reference;
+
+		using iterator_type = _Iterator;
+		using self = reverse_iterator<_Iterator>;
+
+	public:
+		reverse_iterator() {  }
+		explicit reverse_iterator(iterator_type x):current(x){}
+		reverse_iterator(const self &other):current(other.current){}
+		iterator_type base() { return current };
+
+		reference operator*() const{
+			iterator_type temp = current;
+			return *(--temp);
+		}
+		pointer operator->() const {
+			return &(operator*());
+		}
+		self &operator++() {
+			--current;
+			return *this;
+		}
+		self operator++(int) {
+			self temp = *this;
+			--current;
+			return temp;
+		}
+		self &operator--() {
+			++current;
+			return *this;
+		}
+		self operator--(int) {
+			self temp = *this;
+			++current;
+			return temp;
+		}
+	};
+	
+	template<typename _Iterator>
+	inline bool operator==(const reverse_iterator<_Iterator> &x, const reverse_iterator<_Iterator> &y) {
+		return x.base() == y.base();
+	}
+	template<typename _Iterator>
+	inline bool operator!=(const reverse_iterator<_Iterator> &x, const reverse_iterator<_Iterator> &y) {
+		return !(x == y);
+	}
 }
 
 #endif

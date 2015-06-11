@@ -79,6 +79,35 @@ struct Test_Deque {
 			//XX::print_container(std::cout, dq2);
 			assert(XX::is_container_equal(dq1, dq2));
 		}
+		{
+			xx_deque dq2;
+			for (int i = 1;i < 33;i++) {
+				T ts_temp = i;
+				dq2.push_back(ts_temp);
+				dq2.push_front(ts_temp);
+			}
+			xx_deque dq1(dq2);
+			//assert(XX::is_container_equal(dq1, dq2));
+		}
+	}
+	void test_capacity() {
+		{
+			std_deque dq1;
+			xx_deque dq2;
+			assert(dq1.empty() == dq2.empty());
+			for (int i = 1;i < 99;++i) {
+				T ts_temp = i;
+				dq1.push_back(ts_temp);
+				dq2.push_back(ts_temp);
+				dq1.push_front(ts_temp);
+				dq2.push_front(ts_temp);
+			}
+			assert(dq1.size() == dq2.size());
+			assert(dq1.empty() == dq2.empty());
+		}
+	}
+	void test_iterator() {
+		
 	}
 };
 

@@ -7,8 +7,11 @@
 #include"test_deque.h"
 using namespace std;
 int main() {
-	//test_list_protype();
-	test_deque();
+	while (1) {
+		//test_list_protype();
+		test_deque();
+		Sleep(100);
+	}
 	system("pause");
 	return 0;
 }

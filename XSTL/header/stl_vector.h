@@ -3,6 +3,7 @@
 #include"stl_alloc.h"
 #include"stl_construct.h"
 #include"stl_uninitialized.h"
+#include"stl_iterator.h"
 
 #include<initializer_list>//实现采用initializer_list来初始化
 
@@ -54,6 +55,11 @@ namespace XX{
 
 		using const_iterator = const T *;
 		using const_reference = const T &;
+
+		using const_reverse_iterator = reverse_iterator<const_iterator>;
+
+		using reverse_iterator = reverse_iterator<iterator>;
+		//using const_reverse_iterator = reverse_iterator<const_iterator>;
 	private:
 		using data_allocator = simple_alloc<T, Alloc>;
 		/*■■■■■■■■□□□□□□□□□
@@ -103,10 +109,14 @@ namespace XX{
 		iterator          begin();
 		const_iterator    begin() const;
 		const_iterator    cbegin() const;
+		reverse_iterator  rbegin()  { return reverse_iterator(end()); }
+		const_reverse_iterator crbegin() const { return reverse_iterator(cend()); }
 
 		iterator          end();
 		const_iterator    end() const;
 		const_iterator    cend() const;
+		reverse_iterator  rend() { return reverse_iterator(begin()); }
+		const_reverse_iterator crend() { return reverse_iterator(cbegin()); }
 
 		bool              empty() const;
 		size_type         size() const;

@@ -10,4 +10,6 @@ void test_deque() {
 	Test_Deque tdq;
 	tdq.test_push_pop();
 	tdq.test_ctor();
+	tdq.test_capacity();
+	tdq.test_iterator();
 }

@@ -92,7 +92,7 @@ namespace XX {
 		self &operator-=(difference_type n) {
 			return return *this += -n;
 		}
-		self operator-(difference_type n) {
+		self operator-(difference_type n) const{
 			self temp = *this;
 			return temp -= n;
 		}
@@ -100,17 +100,17 @@ namespace XX {
 			return *(*this + n);
 		}
 
-		bool operator==(const self &x) {
+		bool operator== (const self &x) const {
 			return cur == x.cur;
 		}
-		bool operator!=(const self &x) {
+		bool operator!=(const self &x) const{
 			return !(*this == x);
 		}
-		bool operator<(const self &x) {
+		bool operator<(const self &x) const{
 			//在一个buffer内判断cur，不在一个buffer内判断node
 			return (node == x.node) ? (cur < x.cur) : (node < x.node);
 		}
-		difference_type operator-(const self&x) {
+		difference_type operator-(const self&x) const{
 			return difference_type(buffer_size())*(node - x.node - 1) + (cur - first) + (x.last - x.cur);
 		}
 	};
@@ -124,6 +124,10 @@ namespace XX {
 
 		using iterator = deque_iterator<T, T&, T*, BufSize>;
 		using const_iterator = deque_iterator<T, const T&, const T*, BufSize>;
+
+		using const_reverse_iterator = reverse_iterator<const_iterator>;
+		using reverse_iterator = reverse_iterator<iterator>;
+		
 
 		using data_allocator = simple_alloc<value_type, Alloc>;
 		using map_allocator = simple_alloc<pointer, Alloc>;
@@ -140,16 +144,32 @@ namespace XX {
 		deque(size_type n, const T &value);
 		template<typename InputIter>
 		deque(InputIter first, InputIter last);
+		deque(const deque& other);
+		deque(deque && other);
 		~deque();
+		//iterators
 		iterator begin() { return start; }
 		iterator end() { return finish; }
 		const_iterator cbegin() const { return start; }
 		const_iterator cend() const { return finish; }
+		const_iterator begin() const { return start; }
+		const_iterator end() const { return finish; }
+		reverse_iterator rbegin() { return reverse_iterator(end()); }
+		reverse_iterator rend() { return reverse_iterator(begin()); }
+		const_reverse_iterator crbegin() const { return reverse_iterator(cend()); }
+		const_reverse_iterator crend() const { return reverse_iterator(cbegin()); }
+		const_reverse_iterator rbegin() const { return reverse_iterator(cend()); }
+		const_reverse_iterator rend() const { return reverse_iterator(cbegin()); }
+
+		//Modifiers
 		void push_back(const T &value);
-		void push_back(T&&value);
+		//void push_back(T&&value);
 		void pop_back();
 		void push_front(const T &value);
 		void pop_front();
+		size_type size() const { return finish - start; }
+		size_type max_size() const { return size_type(-1); }
+		bool empty() const { return finish == start; }
 	private:
 		void fill_initialize(size_t n, const value_type&value);
 		void creat_map_and_nodes(size_t element_size);
@@ -179,9 +199,16 @@ namespace XX {
 		fill_initialize(n, value);
 	}
 	template<typename T, typename Alloc = alloc, size_t BufSize>
+	deque<T, Alloc, BufSize>::deque(const deque &other) {
+		size_type n = other.size();
+		creat_map_and_nodes(n);
+		uninitialized_copy(other.begin(), other.end(), start);
+	}
+	template<typename T, typename Alloc = alloc, size_t BufSize>
 	deque<T, Alloc, BufSize>::deque() {
 		creat_map_and_nodes(0);
 	}
+
 	template<typename T, typename Alloc , size_t BufSize>
 	template<typename InputIter>
 	deque<T, Alloc, BufSize>::deque(InputIter first,InputIter last) {
