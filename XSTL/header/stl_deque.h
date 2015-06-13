@@ -36,6 +36,10 @@ namespace XX {
 		//指向管控中心
 		map_pointer node;
 
+		//ctor
+		deque_iterator():cur(0),first(0),last(0),node(0){}
+		deque_iterator(const iterator &other):cur(other.cur), first(other.first), last(other.last), node(other.node){}
+		deque_iterator(T* x,map_pointer y):cur(x), first(*y), last(*y+ buffer_size()), node(y) {}
 		//跳一个缓冲区，因为可能向前或者向后，所以要传入参数
 		void set_node(map_pointer new_node) {
 			node = new_node;
@@ -202,7 +206,7 @@ namespace XX {
 	deque<T, Alloc, BufSize>::deque(const deque &other) {
 		size_type n = other.size();
 		creat_map_and_nodes(n);
-		uninitialized_copy(other.begin(), other.end(), start);
+		//uninitialized_copy(other.begin(), other.end(), start);
 	}
 	template<typename T, typename Alloc = alloc, size_t BufSize>
 	deque<T, Alloc, BufSize>::deque() {

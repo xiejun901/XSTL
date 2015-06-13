@@ -7,7 +7,7 @@ namespace XX{
 	{
 		while (first != last)
 		{
-			construct(dest, *first);
+			construct(&*dest, *first);
 			++first;
 			++dest;
 		}

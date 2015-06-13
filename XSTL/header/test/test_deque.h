@@ -107,7 +107,8 @@ struct Test_Deque {
 		}
 	}
 	void test_iterator() {
-		
+		const xx_deque dq1(5, 77);
+		auto iter = dq1.cbegin();
 	}
 };
 
