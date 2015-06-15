@@ -6,12 +6,14 @@
 #include"stl_deque.h"
 #include"test_deque.h"
 #include"test_stack.h"
+#include"test_queue.h"
 using namespace std;
 int main() {
 	while (1) {
 		//test_list_protype();
 		test_deque();
 		test_stack();
+		test_queue();
 		Sleep(100);
 	}
 	system("pause");
