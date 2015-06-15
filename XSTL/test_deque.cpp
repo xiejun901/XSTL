@@ -12,4 +12,6 @@ void test_deque() {
 	tdq.test_ctor();
 	tdq.test_capacity();
 	tdq.test_iterator();
+	tdq.test_modifiers();
+	tdq.test_element_acess();
 }

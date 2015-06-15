@@ -5,11 +5,13 @@
 #include"type_traits.h"
 #include"stl_deque.h"
 #include"test_deque.h"
+#include"test_stack.h"
 using namespace std;
 int main() {
 	while (1) {
 		//test_list_protype();
 		test_deque();
+		test_stack();
 		Sleep(100);
 	}
 	system("pause");

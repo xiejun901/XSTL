@@ -125,9 +125,11 @@ namespace XX {
 		using value_type = T;
 		using pointer = value_type*;
 		using size_type = size_t;
-
+		using difference_type = ptrdiff_t;
 		using iterator = deque_iterator<T, T&, T*, BufSize>;
 		using const_iterator = deque_iterator<T, const T&, const T*, BufSize>;
+		using reference = T&;
+		using const_reference = const T&;
 
 		using const_reverse_iterator = reverse_iterator<const_iterator>;
 		using reverse_iterator = reverse_iterator<iterator>;
@@ -164,16 +166,21 @@ namespace XX {
 		const_reverse_iterator crend() const { return reverse_iterator(cbegin()); }
 		const_reverse_iterator rbegin() const { return reverse_iterator(cend()); }
 		const_reverse_iterator rend() const { return reverse_iterator(cbegin()); }
-
+		//element sacess
+		reference back() { iterator temp = finish;--temp;return *temp; }
+		const_reference back() const{ const_iterator temp = finish;--temp;return *temp; }
+		reference front() { return *start; }
+		const_reference front() const { return *start; }
 		//Modifiers
 		void push_back(const T &value);
-		//void push_back(T&&value);
 		void pop_back();
 		void push_front(const T &value);
 		void pop_front();
 		size_type size() const { return finish - start; }
 		size_type max_size() const { return size_type(-1); }
 		bool empty() const { return finish == start; }
+		void clear();
+		iterator erase(iterator pos);
 	private:
 		void fill_initialize(size_t n, const value_type&value);
 		void creat_map_and_nodes(size_t element_size);
@@ -206,7 +213,14 @@ namespace XX {
 	deque<T, Alloc, BufSize>::deque(const deque &other) {
 		size_type n = other.size();
 		creat_map_and_nodes(n);
-		//uninitialized_copy(other.begin(), other.end(), start);
+		uninitialized_copy(other.begin(), other.end(), start);
+	}
+	template<typename T, typename Alloc = alloc, size_t BufSize>
+	deque<T, Alloc, BufSize>::deque(deque &&other) {
+		start = other.start;
+		finish = other.finish;
+		map = other.map;
+		map_size = other.map_size;
 	}
 	template<typename T, typename Alloc = alloc, size_t BufSize>
 	deque<T, Alloc, BufSize>::deque() {
@@ -298,6 +312,40 @@ namespace XX {
 		}
 		--finish;
 		destroy(finish.cur);
+	}
+
+	template<typename T, typename Alloc , size_t BufSize>
+	void deque<T, Alloc, BufSize>::clear() {
+		for (map_pointer node = start.node + 1;node < finish.node;++node) {
+			destroy(*node, *node + buffer_size());
+			data_allocator::deallocate(*node, buffer_size());
+		}
+		//第一个缓冲区
+		if (start.node != finish.node) {
+			destroy(start.cur, start.last);
+			destroy(finish.first, finish.cur);
+			data_allocator::deallocate(finish.first, buffer_size());
+		}
+		else
+		//只有一个缓冲区
+			destroy(start.cur, finish.cur);
+		finish = start;
+	}
+
+	template<typename T, typename Alloc, size_t BufSize>
+	typename deque<T, Alloc, BufSize>::iterator deque<T, Alloc, BufSize>::erase(iterator pos) {
+		iterator next = pos;
+		++next;
+		difference_type index = pos - start;
+		if ((size_type)index < (size() >> 1)) {
+			copy_backward(start, pos, next);
+			pop_front();
+		}
+		else {
+			copy(next, finish, pos);
+			pop_back();
+		}
+		return start + index;
 	}
 	template<typename T, typename Alloc = alloc, size_t BufSize>
 	void deque<T, Alloc, BufSize>::push_front(const T&value) {

@@ -73,8 +73,8 @@ struct Test_Deque {
 			assert(XX::is_container_equal(dq1, dq2)&& XX::is_container_equal(dq1, vec));
 		}
 		{
-			std::deque<int> dq1(77, 99);
-			XX::deque<int> dq2(77,99);
+			std::deque<int> dq1(999, 99);
+			XX::deque<int> dq2(999,99);
 			//XX::print_container(std::cout, dq1);
 			//XX::print_container(std::cout, dq2);
 			assert(XX::is_container_equal(dq1, dq2));
@@ -87,7 +87,7 @@ struct Test_Deque {
 				dq2.push_front(ts_temp);
 			}
 			xx_deque dq1(dq2);
-			//assert(XX::is_container_equal(dq1, dq2));
+			assert(XX::is_container_equal(dq1, dq2));
 		}
 	}
 	void test_capacity() {
@@ -109,6 +109,46 @@ struct Test_Deque {
 	void test_iterator() {
 		const xx_deque dq1(5, 77);
 		auto iter = dq1.cbegin();
+	}
+	void test_modifiers() {
+		{
+			T ts(3);
+			xx_deque dq1(77, ts);
+			std_deque dq2(77, ts);
+			assert(XX::is_container_equal(dq1, dq2));
+			dq1.clear();
+			dq2.clear();
+			assert(XX::is_container_equal(dq1, dq2));
+		}
+		{
+			xx_deque dq1;
+			std_deque dq2;
+			for (int i = 1;i < 10;++i) {
+				T ts_temp = i;
+				dq1.push_back(ts_temp);
+				dq2.push_back(ts_temp);
+				dq1.push_front(ts_temp);
+				dq2.push_front(ts_temp);
+			}
+			dq1.erase(dq1.begin() + 5);
+			dq2.erase(dq2.begin() + 5);
+			assert(XX::is_container_equal(dq1, dq2));
+		}
+	}
+	void test_element_acess() {
+		{
+			xx_deque dq1;
+			std_deque dq2;
+			for (int i = 1;i < 100;++i) {
+				T ts_temp = i;
+				dq1.push_back(ts_temp);
+				dq2.push_back(ts_temp);
+				dq1.push_front(ts_temp);
+				dq2.push_front(ts_temp);
+			}
+			assert(dq1.front()==dq2.front());
+			assert(dq1.back() == dq2.back());
+		}
 	}
 };
 
