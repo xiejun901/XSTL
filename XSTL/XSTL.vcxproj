@@ -83,6 +83,7 @@
     <ClInclude Include="header\stl_heap.h" />
     <ClInclude Include="header\stl_iterator.h" />
     <ClInclude Include="header\stl_list.h" />
+    <ClInclude Include="header\stl_priority_queue.h" />
     <ClInclude Include="header\stl_queue.h" />
     <ClInclude Include="header\stl_stack.h" />
     <ClInclude Include="header\stl_uninitialized.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="header\test\test.h" />
     <ClInclude Include="header\test\test_deque.h" />
     <ClInclude Include="header\test\test_list.h" />
+    <ClInclude Include="header\test\test_priority_queue.h" />
     <ClInclude Include="header\test\test_queue.h" />
     <ClInclude Include="header\test\test_stack.h" />
     <ClInclude Include="header\test\test_vector.h" />

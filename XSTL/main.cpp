@@ -9,6 +9,7 @@
 #include"test_stack.h"
 #include"test_queue.h"
 #include"stl_heap.h"
+#include"stl_priority_queue.h"
 //using namespace std;
 namespace XX {
 	void test_heap() {

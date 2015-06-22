@@ -4,6 +4,7 @@
 #include"stl_construct.h"
 #include"stl_uninitialized.h"
 #include"stl_iterator.h"
+#include"type_traits.h"
 
 #include<initializer_list>//实现采用initializer_list来初始化
 
@@ -74,8 +75,8 @@ namespace XX{
 		vector() = default;
 		explicit vector(size_type n, const T&value );
 		explicit vector(size_type n);
-		/*template<typename InputIterator>
-		vector(InputIterator first, InputIterator last);*/
+		template<typename InputIterator>
+		vector(InputIterator first, InputIterator last);
 		vector(const vector &other);
 		vector(vector &&other);
 		vector(std::initializer_list<T> init);
@@ -152,6 +153,10 @@ namespace XX{
 		//iterator copy(iterator first, iterator last, iterator dest);
 		/*void copy_backward(iterator first, iterator last, iterator dest_last);*/
 		//void fill(iterator first, iterator last, const T &value);
+		template<typename InputIterator>
+		void initial_dispatch(InputIterator first, InputIterator last, _false_type);
+		template<typename Integer>
+		void initial_dispatch(Integer n, Integer x, _true_type);
 	};
 	//构造函数
 	template<typename T, typename Alloc>
@@ -557,6 +562,29 @@ namespace XX{
 		while (finish != start)
 			destroy(--finish);
 		data_allocator::deallocate(start, end_of_storage - start);
+	}
+	template<typename T, typename Alloc>
+	template <typename InputIterator>
+	vector<T, Alloc>::vector(InputIterator first, InputIterator last)
+	{
+		using integral= typename is_integer<InputIterator>::_integral;
+		initial_dispatch(first, last, integral());
+	}
+	template<typename T, typename Alloc>
+	template <typename InputIterator>
+	void vector<T, Alloc>::initial_dispatch(InputIterator first, InputIterator last, _false_type)
+	{
+		while (first != last)
+			push_back(*first++);
+	}
+	template<typename T, typename Alloc>
+	template <typename Integer>
+	void vector<T, Alloc>::initial_dispatch(Integer n, Integer x, _true_type)
+	{
+		start = data_allocator::allocate(n);
+		finish = start + n;
+		end_of_storage = start + n;
+		uninitialized_fill(start, finish, x);
 	}
 	//template<typename T, typename Alloc>
 	//typename vector<T, Alloc>::iterator vector<T, Alloc>::copy(iterator first, iterator last, iterator dest){
