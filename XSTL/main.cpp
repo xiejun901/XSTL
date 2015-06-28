@@ -10,6 +10,7 @@
 #include"test_queue.h"
 #include"stl_heap.h"
 #include"stl_priority_queue.h"
+#include"test_tree.h"
 //using namespace std;
 namespace XX {
 	void test_heap() {
@@ -31,6 +32,7 @@ namespace XX {
 int main() {
 	while (1) {
 		//test_list_protype();
+		test_tree();
 		test_deque();
 		test_stack();
 		test_queue();
