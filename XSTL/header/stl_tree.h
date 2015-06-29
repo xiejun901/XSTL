@@ -3,7 +3,9 @@
 #include<ctype.h>
 #include"stl_iterator.h"
 #include"stl_alloc.h"
+#define private public
 //红黑树结点
+
 namespace XX {
 	using _rb_tree_color_type = bool;
 	const _rb_tree_color_type _rb_tree_color_red = false;
@@ -135,7 +137,8 @@ namespace XX {
 		using const_iterator = _rb_tree_iterator<value_type, const_reference, const_pointer>;
 		using const_reverse_iterator = reverse_iterator<const_iterator>;
 		using reverse_iterator = reverse_iterator<iterator>;
-		
+	public:
+		rb_tree(const Compare comp=Compare());
 	private:
 		link_type get_node();
 		void put_node(link_type p);
@@ -143,23 +146,42 @@ namespace XX {
 		void destroy_node(link_type p);
 
 		//主要是这儿节点的指针类型是_rb_tree_node_base *类型的，需要强制转换为_rb_tree_node *类型  (T &)x和 *((T *)&x)的效果是一样的同reinterpret_cast;
-		link_type &root() const { return (link_type&)header->_parent; }
-		link_type &leftmost() const { return (link_type&)header->_left; }
-		link_type &rightmost() const { return (link_type&)header->_right; }
+		link_type &root() const { return (link_type&)(header->_parent); }
+		link_type &leftmost() const { return (link_type&)(header->_left); }
+		link_type &rightmost() const { return (link_type&)(header->_right); }
 
-		static link_type &left(link_type x) { return (link_type&)x->_left; }
-		static link_type &right(link_type x) { return (link_type&)x->_right; }
-		static link_type &parent(link_type x) { return (link_type&)x->_parent; }
+		static link_type& left(link_type x) { return (link_type&)(x->_left); }
+		static link_type& right(link_type x) { return (link_type&)(x->_right); }
+		static link_type& parent(link_type x) { return (link_type&)(x->_parent); }
 		static reference value(link_type x) { return x->_field; }
-		static const Key &key(link_type x) { return KeyOfValue()value(x); }
+		static const Key& key(link_type x) { return KeyOfValue()(value(x)); }
+		static color_type& color(link_type x) { return (color_type&)(x->_color); }
+
+		static link_type& left(base_ptr x) { return (link_type&)(x->_left); }
+		static link_type& right(base_ptr x) { return (link_type&)(x->_right); }
+		static link_type& parent(base_ptr x) { return (link_type&)(x->_parent); }
+		static reference value(base_ptr x) { return ((link_type &)x)->_field; }
+		static const Key& key(base_ptr x) { return KeyOfValue()(value(x)); }
+		static color_type& color(base_ptr x) { return (color_type&)(x->_color); }
+
+		//初始化一棵树，只有一个空结点即只有header结点
+		void init();
+		void rotation_right(base_ptr x);
+		void rotation_left(base_ptr x);
 		//私有成员
 	private:
 		size_type node_count;//记录节点数量
 		link_type header;//一个结点，此节点的左儿子是最小的结点，右节点是最大的儿子，父节点，参见算法导论中的nil节点，这儿将nil节点添加了附加信息作为边界
-		Compare key_compare;//用于比较key大小的函数
+		Compare key_compare;//用于比较key大小的函数对象
 		
 	};
 	
+	template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+	rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::rb_tree(const Compare comp):key_compare(comp)
+	{
+		init();
+	}
+
 	template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
 	inline typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::link_type rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::get_node()
 	{
@@ -185,6 +207,54 @@ namespace XX {
 	{
 		destroy(&p->_field);
 		put_node(p);
+	}
+
+	template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+	inline void rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::init()
+	{
+		header = get_node();
+		color(header) = _rb_tree_color_red;
+
+		root() = nullptr;
+		leftmost() = header;
+		rightmost() = header;
+	}
+
+	template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+	inline void rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::rotation_right(base_ptr x)
+	{
+		base_ptr y = x->_left;
+		x->_left = y->_right;
+		if (y->_right != nullptr)
+			y->_right->_parent = x;
+		y->_parent = x->_parent;
+		if (parent(x) == header)
+			header->_parent = y;
+		else if (x == x->_parent->_left)
+			x->_parent->_left = y;
+		else
+			x->_parent->_right = y;
+		y->_right = x;
+		x->_parent = y;
+
+	}
+
+	template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+	inline void rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::rotation_left(base_ptr x)
+	{
+		base_ptr y = x->_right;
+		x->_right = y->_left;
+		if (y->_left != nullptr)
+			y->_left->_parent = x;
+		y->_parent = x->_parent;
+		if (parent(x) == header)
+			header->_parent = y;
+		else if (x == x->_parent->_left)
+			x->_parent->_left = y;
+		else
+			x->_parent->_right = y;
+		x->_parent = y;
+		y->_left = x;
 	}
 
 }

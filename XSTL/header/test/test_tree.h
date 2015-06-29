@@ -1,7 +1,7 @@
 #pragma once
 #include"stl_tree.h"
 void test_tree();
-class TestTree {
+class TestTree:public XX::rb_tree<int, int, int, int> {
 public:
 	void test_node() {
 
@@ -55,5 +55,9 @@ public:
 		iter--;
 		iter--;
 		iter--;
+	}
+	void test_rotation() {
+		
+	
 	}
 };

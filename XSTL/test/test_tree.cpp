@@ -4,4 +4,5 @@ void test_tree()
 	TestTree tt;
 	tt.test_node();
 	tt.test_iterator();
+	tt.test_rotation();
 }
