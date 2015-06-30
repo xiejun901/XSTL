@@ -32,12 +32,11 @@ namespace XX {
 int main() {
 	while (1) {
 		//test_list_protype();
+		//test_deque();
+		//test_stack();
+		//test_queue();
 		test_tree();
-		test_deque();
-		test_stack();
-		test_queue();
-		XX::test_heap();
-		Sleep(100);
+		Sleep(10);
 	}
 	system("pause");
 	return 0;

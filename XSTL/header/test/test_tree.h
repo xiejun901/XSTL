@@ -1,7 +1,21 @@
 #pragma once
 #include"stl_tree.h"
+#include"test\test.h"
+#include<iostream>
 void test_tree();
-class TestTree:public XX::rb_tree<int, int, int, int> {
+struct KeyOfValue {
+	int operator()(int x)
+	{
+		return x;
+	}
+};
+struct less {
+	bool operator()(int x, int y)
+	{
+		return x < y;
+	}
+};
+class TestTree{
 public:
 	void test_node() {
 
@@ -56,8 +70,37 @@ public:
 		iter--;
 		iter--;
 	}
-	void test_rotation() {
-		
+	void test_insert() {
+		XX::rb_tree<int, int, KeyOfValue, less > tree;
+		auto temp = std::less<int>()(7, 10);
+		tree.insert_equal(10);
+		tree.insert_equal(7);
+		tree.insert_equal(8);
+		tree.insert_equal(15);
+		tree.insert_equal(5);
+		tree.insert_equal(6);
+		tree.insert_equal(11);
+		tree.insert_equal(13);
+		tree.insert_equal(12);
+		XX::print_container(std::cout,tree);
+		auto iter = tree.begin();
+		iter++;
+		iter++;
+		tree.erase(iter);
+		XX::print_container(std::cout, tree);
+		iter = tree.end();
+		--iter;
+		--iter;
+		tree.erase(iter);
+		XX::print_container(std::cout, tree);
+		iter = tree.begin();
+		tree.erase(iter);
+		XX::print_container(std::cout, tree);
+		iter = tree.end();
+		tree.erase(iter);
+		XX::print_container(std::cout, tree);
+
+
 	
 	}
 };
