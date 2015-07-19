@@ -4,6 +4,7 @@
 #include"stl_iterator.h"
 #include"stl_alloc.h"
 #include"stl_construct.h"
+#include"stl_algobase.h"
 #define private public
 //红黑树结点
 
@@ -52,21 +53,34 @@ namespace XX {
 				_node = _rb_tree_node_base::minimum(_node->_right);
 			else {
 				_rb_tree_node_ptr y= _node->_parent;
-				while (y != nullptr&&_node == y->_right) {
+				while (_node == y->_right) {
 					_node = y;
 					y = _node->_parent;
 				}
-				_node = y;
+				if(_node->_right!=y)
+					_node = y;
 			}
 		}
 		void _decrement() {
-			if (_node->_left != nullptr)
+			/*if (_node->_left != nullptr)
 				_node = _rb_tree_node_base::maximum(_node->_left);
 			else {
 				_rb_tree_node_ptr y = _node->_parent;
 				while (y != nullptr&&_node == y->_left) {
 					_node = y;
 					y = _node->_parent;
+				}
+				_node = y;
+			}*/
+			if (_node->_color == _rb_tree_color_red && _node->_parent->_parent == _node) //红色是为了区分根结点与header节点，header结点的前一个节点为最大节点
+				_node = _node->_right;
+			else if (_node->_left != nullptr)
+				_node = _rb_tree_node_base::maximum(_node);
+			else{
+				_rb_tree_node_ptr y = _node->_parent;
+				while (_node == y->_left) {
+					_node = y;
+					y = y->_parent;
 				}
 				_node = y;
 			}
@@ -156,7 +170,7 @@ namespace XX {
 		}
 		Compare key_comp() const { return key_comp; }
 		iterator begin() const { return leftmost(); }
-		iterator end() const { return rightmost(); }
+		iterator end() const { return header;/*rightmost();*/ }
 		bool empty() const { return node_count == 0; }
 		size_type size() const { return node_count; }
 		size_type max_size() const { return size_type(-1); }
@@ -202,7 +216,7 @@ namespace XX {
 		//插入一个数据
 		iterator _insert(base_ptr _x, base_ptr _y, const value_type& v);
 		void _rb_tree_rebalance(base_ptr z);
-		void _delete(base_ptr z);
+		base_ptr _delete(base_ptr z);
 		void _rb_tree_delete_rebalance(base_ptr x);
 		//私有成员
 	private:
@@ -411,20 +425,186 @@ namespace XX {
 	}
 
 	template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
-	void rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::_delete(base_ptr z)
+	inline typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>:: base_ptr rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::_delete(base_ptr z)
 	{
 		base_ptr y = z;
-		base_ptr x;
-		color_type yOriginalColor = y->_color;
+		base_ptr x = nullptr;
+		base_ptr x_parent = nullptr;
+		//左子树为空
+		if (y->_left == nullptr)
+			x = y->_right;
+		else
+		{
+			if (y->_right == nullptr)
+				x = y->_left;
+			else
+			{
+				y = minimum(y->_right);
+				x = y->_right;
+			}
+		}
+		if (y != z)
+		{
+			z->_left->_parent = y;
+			y->_left = z->_left;
+			if (y != z->_right)
+			{
+				x_parent = y->_parent;
+				if (x)
+					x->_parent = y->_parent;
+				y->_parent->_left = x;
+				y->_right = z->_right;
+				z->_right->_parent = y;
+			}
+			else
+				x_parent = y;
+			if (header->_parent == z)
+				header->_parent = y;
+			else if (z->_parent->_left == z)
+				z->_parent->_left = y;
+			else
+				z->_parent->_right = y;
+			y->_parent = z->_parent;
+			swap(y->_color, z->_color);
+			y = z;
+		}
+		else //y==z
+		{
+			x_parent = y->_parent;
+			if (x)
+				x->_parent = y->_parent;
+			if (header->_parent == z)
+				header->_parent = x;
+			else
+			{
+				if (z->_parent->_left == z)
+					z->_parent->_left = x;
+				else
+					z->_parent->_right = x;
+			}
+			if (header->_left == z)
+			{
+				if (z->_right == nullptr)
+					header->_left = z->_parent;
+				else
+					header->_left = minimum(x);
+			}
+			if (header->_right == z)
+			{
+				if (z->_left == nullptr)
+					header->_right = z->_parent;
+				else
+					header->_right = maximum(x);
+			}
+		}
+		if (y->_color != _rb_tree_color_red)
+		{
+			while (x != header->_parent && (x == nullptr || x->_color == _rb_tree_color_black))
+			{
+				if (x == x_parent->_left)
+				{
+					base_ptr w = x_parent->_right;
+					if (w->_color == _rb_tree_color_red)
+					{
+						x_parent->_color = _rb_tree_color_red;
+						w->_color = _rb_tree_color_black;
+						rotation_left(x_parent);
+						w = x_parent->_right;
+					}
+					if ((w->_right==nullptr || w->_right->_color == _rb_tree_color_black)&&
+						(w->_left==nullptr || w->_left->_color == _rb_tree_color_black))
+					{
+						w->_color = _rb_tree_color_red;
+						x = x_parent;
+						x_parent = x_parent->_parent;
+					}
+					else
+					{
+						if (w->_right == nullptr || w->_right->_color == _rb_tree_color_black)
+						{
+							if(w->_left)
+								w->_left->_color = _rb_tree_color_black;
+							w->_color = _rb_tree_color_red;
+							rotation_right(w);
+							w = x_parent->_right;
+						}
+						if(w->_right)
+							w->_right->_color = _rb_tree_color_black;
+						w->_color = x_parent->_color;
+						x_parent->_color = _rb_tree_color_black;
+						rotation_left(x_parent);
+						//x = header->_parent;
+						break;
+					}
+				}
+				else
+				{
+					base_ptr w = x_parent->_left;
+					if (w->_color == _rb_tree_color_red)
+					{
+						x_parent->_color = _rb_tree_color_red;
+						w->_color = _rb_tree_color_black;
+						rotation_right(x_parent);
+						w = x_parent->_left;
+					}
+					if ((w->_left == nullptr ||w->_left->_color == _rb_tree_color_black)&&
+						(w->_right == nullptr || w->_right->_color == _rb_tree_color_black))
+					{
+						w->_color = _rb_tree_color_red;
+						x = x_parent;
+						x_parent = x_parent->_parent;
+					}
+					else
+					{
+						if (w->_left == nullptr || w->_left->_color == _rb_tree_color_black)
+						{
+							w->_color = _rb_tree_color_red;
+							if(w->_right)
+								w->_right->_color = _rb_tree_color_black;
+							rotation_left(w);
+							w = x_parent->_left;
+						}
+						if(w->_left)
+							w->_left->_color = _rb_tree_color_black;
+						w->_color = x_parent->_color;
+						x_parent->_color = _rb_tree_color_black;
+						rotation_right(x_parent);
+						//x = header->_parent;
+						break;
+					}
+				}
+			}
+			if(x)
+				x->_color = _rb_tree_color_black;
+		}
+		return y;
+		//if (y->_color != _rb_tree_color_red)
+		//	_rb_tree_delete_rebalance(x);
+		/*color_type yOriginalColor = y->_color;
 		if (z->_left == nullptr)
 		{
 			x = z->_right;
 			trans_plant(z, z->_right);
+			if (z == header->_left)
+			{
+				if (z->_right == nullptr)
+					header->_left = z->_parent;
+				else
+					header->_left = minimum(z->_right);
+			}
+			if (z == header->_right)
+			{
+				header->_right = z->_parent;
+			}
 		}
-		else if (nullptr == z->_left)
+		else if (nullptr == z->_right)
 		{
 			x = z->_left;
 			trans_plant(z, z->_left);
+			if (z == header->_right)
+			{
+				header->_right = maximum(z->_left);
+			}
 		}
 		else
 		{
@@ -445,13 +625,13 @@ namespace XX {
 			y->_color = z->_color;
 		}
 		if (yOriginalColor == _rb_tree_color_black)
-			_rb_tree_delete_rebalance(x);
+			_rb_tree_delete_rebalance(x);*/
 	}
 
 	template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
 	void rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::_rb_tree_delete_rebalance(base_ptr x)
 	{
-		while (x != root() && x->_color == _rb_tree_color_black)
+		while (x != header->_parent && x->_color == _rb_tree_color_black)
 		{
 			if (x == x->_parent->_left)
 			{
@@ -512,11 +692,11 @@ namespace XX {
 					w->_color = x->_parent->_color;
 					x->_parent->_color = _rb_tree_color_black;
 					rotation_right(x->_parent);
-					x = root();
+					x = header->_parent;
 				}
 			}
 		}
-		x->_color = _rb_tree_color_red;
+		x->_color = _rb_tree_color_black;
 	}
 
 	

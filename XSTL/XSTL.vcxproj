@@ -45,7 +45,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>E:\git\XSTL\XSTL\header;E:\git\XSTL\XSTL\header\test;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\allocator.h" />
+    <ClInclude Include="header\stl_algobase.h" />
     <ClInclude Include="header\stl_alloc.h" />
     <ClInclude Include="header\stl_construct.h" />
     <ClInclude Include="header\stl_deque.h" />

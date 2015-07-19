@@ -1,8 +1,30 @@
 #pragma once
 #include"stl_tree.h"
 #include"test\test.h"
+#include"test_vector.h"
+#include"stl_queue.h"
+#include<stdio.h>
+#include<vector>
 #include<iostream>
 void test_tree();
+using std::vector;
+using std::cout;
+using std::endl;
+using std::cin;
+class Loger {
+	Loger() = delete;
+	Loger(Loger &) = delete;
+public:
+	static FILE * get_fp()
+	{
+		static FILE *fp = nullptr;
+		if (fp == nullptr)
+		{
+			fp = fopen("log.txt", "a+");
+		}
+		return fp;
+	}
+};
 struct KeyOfValue {
 	int operator()(int x)
 	{
@@ -13,6 +35,53 @@ struct less {
 	bool operator()(int x, int y)
 	{
 		return x < y;
+	}
+};
+struct TreeSolution {
+	using tree_type=XX::rb_tree<int, int, KeyOfValue, less >;
+	using link_type = XX::rb_tree<int, int, KeyOfValue, less >::link_type;
+	vector<vector<link_type>> treeToVector(tree_type tree)
+	{
+		vector<vector<link_type>> result;
+		XX::queue<link_type> q;
+		if (tree.empty())
+			return vector<vector<link_type>>(1, vector<link_type>(1, nullptr));
+		q.push(tree.root());
+		q.push(nullptr);
+		result.push_back(vector<link_type>());
+		while (q.size()>1)
+		{
+			link_type n = q.front();
+			q.pop();
+			if (n == nullptr)
+			{
+				result.push_back(vector<link_type>());
+				q.push(nullptr);
+			}
+			else
+			{
+				result.back().push_back(n);
+				if (tree.left(n) != nullptr)
+				{
+					q.push(tree.left(n));
+				}
+				if (tree.right(n) != nullptr)
+				{
+					q.push(tree.right(n));
+				}
+			}
+		}
+		for (auto v : result)
+		{
+			for (auto l : v)
+			{
+				fprintf(Loger::get_fp(), "%p: parent(%p) left(%p) right(%p) color(%5s) value(%5d);", l, l->_parent, l->_left, l->_right, l->_color ? "black" : "red", l->_field);
+			}
+			fprintf(Loger::get_fp(),"\n");
+		}
+		fprintf(Loger::get_fp(), "\n\n");
+		fflush(Loger::get_fp());
+		return result;
 	}
 };
 class TestTree{
@@ -82,23 +151,65 @@ public:
 		tree.insert_equal(11);
 		tree.insert_equal(13);
 		tree.insert_equal(12);
+		auto iter1 = tree.begin();
+		while (iter1 != tree.end())
+		{
+			cout << *iter1;
+			++iter1;
+		}
+		auto result = TreeSolution().treeToVector(tree);
 		XX::print_container(std::cout,tree);
 		auto iter = tree.begin();
-		iter++;
-		iter++;
 		tree.erase(iter);
-		XX::print_container(std::cout, tree);
-		iter = tree.end();
-		--iter;
-		--iter;
-		tree.erase(iter);
+		result = TreeSolution().treeToVector(tree);
 		XX::print_container(std::cout, tree);
 		iter = tree.begin();
 		tree.erase(iter);
+		result = TreeSolution().treeToVector(tree);
 		XX::print_container(std::cout, tree);
-		iter = tree.end();
+		iter = tree.begin();
 		tree.erase(iter);
+		result = TreeSolution().treeToVector(tree);
 		XX::print_container(std::cout, tree);
+		iter = tree.begin();
+		tree.erase(iter);
+		result = TreeSolution().treeToVector(tree);
+		XX::print_container(std::cout, tree);
+		iter = tree.begin();
+		tree.erase(iter);
+		result = TreeSolution().treeToVector(tree);
+		XX::print_container(std::cout, tree);
+		iter = tree.begin();
+		tree.erase(iter);
+		result = TreeSolution().treeToVector(tree);
+		XX::print_container(std::cout, tree);
+		iter = tree.begin();
+		tree.erase(iter);
+		result = TreeSolution().treeToVector(tree);
+		XX::print_container(std::cout, tree);
+		iter = tree.begin();
+		tree.erase(iter);
+		result = TreeSolution().treeToVector(tree);
+		XX::print_container(std::cout, tree);
+		iter = tree.begin();
+		tree.erase(iter);
+		result = TreeSolution().treeToVector(tree);
+		XX::print_container(std::cout, tree);
+		//iter++;
+		//iter++;
+		//tree.erase(iter);
+		//XX::print_container(std::cout, tree);
+		//iter = tree.end();
+		//--iter;
+		//--iter;
+		//tree.erase(iter);
+		//XX::print_container(std::cout, tree);
+		//iter = tree.begin();
+		//tree.erase(iter);
+		//XX::print_container(std::cout, tree);
+		//iter = tree.end();
+		//tree.erase(iter);
+		//XX::print_container(std::cout, tree);
 
 
 	
