@@ -1,0 +1,18 @@
+007EFE18: parent(007EFE00) left(007EFE30) right(007EFE48) color(black) value(   15);
+007EFE30: parent(007EFE18) left(007EFE78) right(00000000) color(black) value(   13);007EFE48: parent(007EFE18) left(00000000) right(007EFE60) color(black) value(   56);
+007EFE78: parent(007EFE30) left(00000000) right(00000000) color(  red) value(    2);007EFE60: parent(007EFE48) left(00000000) right(00000000) color(  red) value(   77);
+
+
+00C2F410: parent(00C2F3F8) left(00C2F428) right(00C2F440) color(black) value(   15);
+00C2F428: parent(00C2F410) left(00C2F470) right(00000000) color(black) value(   13);00C2F440: parent(00C2F410) left(00000000) right(00C2F458) color(black) value(   56);
+00C2F470: parent(00C2F428) left(00000000) right(00000000) color(  red) value(    2);00C2F458: parent(00C2F440) left(00000000) right(00000000) color(  red) value(   77);
+
+
+006CF460: parent(006CF448) left(006CF478) right(006CF490) color(black) value(   15);
+006CF478: parent(006CF460) left(006CF4C0) right(00000000) color(black) value(   13);006CF490: parent(006CF460) left(00000000) right(006CF4A8) color(black) value(   56);
+006CF4C0: parent(006CF478) left(00000000) right(00000000) color(  red) value(    2);006CF4A8: parent(006CF490) left(00000000) right(00000000) color(  red) value(   77);
+
+
+006CF448: parent(006CF448) left(00000000) right(00000000) color(black) value(   99);
+
+

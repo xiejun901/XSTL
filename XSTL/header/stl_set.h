@@ -1,22 +1,8 @@
 #ifndef _STL_SET_H_
 #define _STL_SET_H_
 #include"stl_tree.h"
+#include"stl_function.h"
 namespace XX {
-    template<typename value_type>
-    struct _Identity
-    {
-        const value_type &operator()(const value_type &x) const
-        {
-            return x;
-        }
-    };
-    template<typename T>
-    struct less {
-        bool operator()(T x, T y)
-        {
-            return x < y;
-        }
-    };
     template <typename _Key, typename _Compare=less<_Key>, typename _Alloc=alloc>
     class set {
     public:
@@ -30,17 +16,36 @@ namespace XX {
     public:
         using pointer = typename _Rep_type::pointer;
         using iterator = typename _Rep_type::iterator;
-        void insert(value_type x)
-        {
-            t.insert_equal(x);
-        }
-        iterator begin() {
-            return t.begin();
-        }
-        iterator end() {
-            return t.end();
-        }
+        using size_type = typename _Rep_type::size_type;
+        void insert(value_type x);
+        iterator begin();
+        iterator end();
+        bool empty();
+        size_type size();      
     };
+    template<typename _Key, typename _Compare, typename _Alloc>
+    inline void set<_Key, _Compare, _Alloc>::insert(value_type x)
+    {
+        t.insert_equal(x);
+    }
+    template<typename _Key, typename _Compare, typename _Alloc>
+    inline typename set<_Key, _Compare, _Alloc>::iterator set<_Key, _Compare, _Alloc>::begin() {
+        return t.begin();
+    }
+    template<typename _Key, typename _Compare, typename _Alloc>
+    inline typename set<_Key, _Compare, _Alloc>::iterator set<_Key, _Compare, _Alloc>::end() {
+        return t.end();
+    }
+    template<typename _Key, typename _Compare, typename _Alloc>
+    inline bool set<_Key, _Compare, _Alloc>::empty()
+    {
+        return t.empty();
+    }
+    template<typename _Key, typename _Compare, typename _Alloc>
+    inline typename set<_Key, _Compare, _Alloc>::size_type set<_Key, _Compare, _Alloc>::size()
+    {
+        return t.size();
+    }
 }
 
 #endif

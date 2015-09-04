@@ -142,15 +142,24 @@ public:
 	void test_insert() {
 		XX::rb_tree<int, int, KeyOfValue, less > tree;
 		auto temp = std::less<int>()(7, 10);
-		tree.insert_equal(10);
-		tree.insert_equal(7);
-		tree.insert_equal(8);
-		tree.insert_equal(15);
-		tree.insert_equal(5);
-		tree.insert_equal(6);
-		tree.insert_equal(11);
-		tree.insert_equal(13);
-		tree.insert_equal(12);
+		//tree.insert_equal(10);
+		//tree.insert_equal(7);
+		//tree.insert_equal(8);
+		//tree.insert_equal(15);
+		//tree.insert_equal(5);
+		//tree.insert_equal(6);
+		//tree.insert_equal(11);
+		//tree.insert_equal(13);
+		//tree.insert_equal(12);
+
+        tree.insert_equal(15);
+        tree.insert_equal(13);
+        tree.insert_equal(56);
+        tree.insert_equal(77);
+        tree.insert_equal(2);
+        //auto result = TreeSolution().treeToVector(tree);
+        tree.insert_equal(99);
+        //result = TreeSolution().treeToVector(tree);
 		auto iter1 = tree.begin();
 		while (iter1 != tree.end())
 		{

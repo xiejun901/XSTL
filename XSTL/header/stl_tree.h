@@ -341,8 +341,10 @@ namespace XX {
 		if (y->_right != nullptr)
 			y->_right->_parent = x;
 		y->_parent = x->_parent;
-		if (parent(x) == header)
-			header->_parent = y;
+		//if (parent(x) == header)
+		//	header->_parent = y;
+        if (x == header->_parent)
+            header->_parent = y;
 		else if (x == x->_parent->_left)
 			x->_parent->_left = y;
 		else
@@ -360,14 +362,16 @@ namespace XX {
 		if (y->_left != nullptr)
 			y->_left->_parent = x;
 		y->_parent = x->_parent;
-		if (parent(x) == header)
-			header->_parent = y;
+		//if (parent(x) == header)
+		//	header->_parent = y;
+        if (x == header->_parent)
+            header->_parent = y;
 		else if (x == x->_parent->_left)
 			x->_parent->_left = y;
 		else
 			x->_parent->_right = y;
+        y->_left = x;
 		x->_parent = y;
-		y->_left = x;
 	}
 
 	template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
@@ -376,7 +380,7 @@ namespace XX {
 		link_type x = (link_type)_x;
 		link_type y = (link_type)_y;
 		link_type z;
-		if (y == header || key_compare(KeyOfValue()(v), key(y)))
+        if (y == header || x != nullptr || key_compare(KeyOfValue()(v), key(y)))
 		{
 			//在左结点做插入，以及判断是否要让此节点为根结点，以及确定最左最右节点
 			z = create_node(v);
@@ -446,7 +450,7 @@ namespace XX {
 				}
 				else
 				{
-					if (z = z->_parent->_left)
+					if (z == z->_parent->_left)
 					{
 						z = z->_parent;
 						rotation_right(z);
