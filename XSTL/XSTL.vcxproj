@@ -71,6 +71,7 @@
     <ClCompile Include="test.cpp" />
     <ClCompile Include="test\test_list.cpp" />
     <ClCompile Include="test\test_queue.cpp" />
+    <ClCompile Include="test\test_set.cpp" />
     <ClCompile Include="test\test_stack.cpp" />
     <ClCompile Include="test\test_tree.cpp" />
     <ClCompile Include="test\test_vector.cpp" />
@@ -87,6 +88,7 @@
     <ClInclude Include="header\stl_list.h" />
     <ClInclude Include="header\stl_priority_queue.h" />
     <ClInclude Include="header\stl_queue.h" />
+    <ClInclude Include="header\stl_set.h" />
     <ClInclude Include="header\stl_stack.h" />
     <ClInclude Include="header\stl_tree.h" />
     <ClInclude Include="header\stl_uninitialized.h" />

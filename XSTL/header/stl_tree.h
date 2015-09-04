@@ -177,11 +177,15 @@ namespace XX {
 
 		iterator insert_equal(const value_type& v);
 		void erase(iterator position);
+
+        ~rb_tree();
 	private:
 		link_type get_node();
 		void put_node(link_type p);
 		link_type create_node(const value_type x);
 		void destroy_node(link_type p);
+        void _erase(link_type x);//erase without rebalancing
+        void clear();
 
 		//主要是这儿节点的指针类型是_rb_tree_node_base *类型的，需要强制转换为_rb_tree_node *类型  (T &)x和 *((T *)&x)的效果是一样的同reinterpret_cast;
 		link_type &root() const { return (link_type&)(header->_parent); }
@@ -246,6 +250,13 @@ namespace XX {
 		--node_count;
 	}
 
+    template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+    inline rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::~rb_tree()
+    {
+        clear(); 
+        put_node(header);
+    }
+
 	template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
 	inline typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::link_type rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::get_node()
 	{
@@ -272,6 +283,31 @@ namespace XX {
 		destroy(&p->_field);
 		put_node(p);
 	}
+
+    template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+    inline void rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::_erase(link_type x)
+    {
+        while (x != nullptr)
+        {
+            _erase(right(x));
+            link_type y = left(x);
+            destroy_node(x);
+            x = y;
+        }
+    }
+
+    template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
+    inline void rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::clear()
+    {
+        if (node_count != 0)
+        {
+            _erase(root());
+            leftmost() = header;
+            root() = nullptr;
+            rightmost() = header;
+            node_count = 0;
+        }
+    }
 
 	template<typename Key, typename Value, typename KeyOfValue, typename Compare, typename Alloc>
 	inline void rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::trans_plant(base_ptr u, base_ptr v)
