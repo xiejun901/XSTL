@@ -5,7 +5,9 @@
 namespace XX {
     template<typename Key, typename T, typename Compare = less<key>, typename Alloc = alloc>
     class map {
-
+        using key_type = Key;
+        using data_type = T;
+        using value_type = pair<const Key, T>;
     };
 }
 #endif
