@@ -21,7 +21,9 @@ namespace XX {
         iterator begin();
         iterator end();
         bool empty();
-        size_type size();      
+        size_type size();  
+        size_type max_size();
+        void clear();
     };
     template<typename _Key, typename _Compare, typename _Alloc>
     inline void set<_Key, _Compare, _Alloc>::insert(value_type x)
@@ -45,6 +47,15 @@ namespace XX {
     inline typename set<_Key, _Compare, _Alloc>::size_type set<_Key, _Compare, _Alloc>::size()
     {
         return t.size();
+    }
+    template<typename _Key, typename _Compare, typename _Alloc>
+    inline typename set<_Key, _Compare, _Alloc>::size_type set<_Key, _Compare, _Alloc>::max_size()
+    {
+        return t.max_size();
+    }
+    template<typename _Key, typename _Compare, typename _Alloc>
+    inline void set<_Key, _Compare, _Alloc>::clear() {
+        t.clear();
     }
 }
 
